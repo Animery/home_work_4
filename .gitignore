@@ -1,0 +1,8 @@
+# Type files
+*.ppm
+
+# Folder
+build/
+bin/
+lib/
+.vscode/
