@@ -19,7 +19,7 @@ int main(int, char**)
             vertex out = v_in;
 
             // rotate
-            double alpha = 3.14159; // 90 degree
+            double alpha = 3.14159; // 180 degree
             double x     = out.x;
             double y     = out.y;
             out.x        = x * std::cos(alpha) - y * std::sin(alpha);
