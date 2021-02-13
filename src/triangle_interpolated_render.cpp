@@ -27,10 +27,8 @@ vertex interpolate(const vertex& v0, const vertex& v1, const double t)
     };
 }
 
-triangle_interpolated::triangle_interpolated(canvas& buffer,
-                                             size_t  width,
-                                             size_t  height)
-    : triangle_indexed_render(buffer, width, height)
+triangle_interpolated::triangle_interpolated(canvas& buffer)
+    : triangle_indexed_render(buffer)
 {
 }
 

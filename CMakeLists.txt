@@ -39,7 +39,21 @@ add_executable(5_triangle-interpolated  src/triangle_interpolated_render.cpp
                                         )
 target_compile_features(5_triangle-interpolated PUBLIC cxx_std_17)
 
-install(TARGETS 1_canvas 2_line_render 3_triangle_render 4_triangle_indexed 5_triangle-interpolated
+find_package(SDL2)
+
+add_executable(basic-windowed   src/render_basic.cpp
+                                src/triangle_interpolated_render.cpp
+                                include/triangle_interpolated_render.hpp
+                                src/canvas.cpp
+                                src/line_render.cpp
+                                src/triangle_render.cpp
+                                src/triangle_indexed_render.cpp
+                                )
+
+target_link_libraries(basic-windowed PRIVATE SDL2::SDL2-static SDL2::SDL2main)
+target_compile_features(basic-windowed PUBLIC cxx_std_17)
+
+install(TARGETS 1_canvas #2_line_render 3_triangle_render 4_triangle_indexed 5_triangle-interpolated basic-windowed
         RUNTIME DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin
         LIBRARY DESTINATION ${CMAKE_CURRENT_LIST_DIR}/lib
         ARCHIVE DESTINATION ${CMAKE_CURRENT_LIST_DIR}/lib)

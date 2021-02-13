@@ -5,13 +5,17 @@
 int main(int, char**)
 {
     auto        begin_time = std::chrono::high_resolution_clock::now();
-    const color black = { 0, 0, 0 };
-    const color white = { 255, 255, 255 };
-    const color green = { 0, 255, 0 };
 
-    canvas image;
+    const color black      = { 0, 0, 0 };
+    const color white      = { 255, 255, 255 };
+    const color green      = { 0, 255, 0 };
 
-    line_render render(image, width, height);
+    constexpr uint16_t width      = 320 * 2;
+    constexpr uint16_t height     = 240 * 2;
+
+    canvas image(width, height);
+
+    line_render render(image);
 
     render.clear(black);
 
@@ -25,10 +29,10 @@ int main(int, char**)
 
     for (size_t i = 0; i < 100; ++i)
     {
-        position start{ rand() % static_cast<int>(width),
-                        rand() % static_cast<int>(height) };
-        position end{ rand() % static_cast<int>(width),
-                      rand() % static_cast<int>(height) };
+        position start{ rand() % static_cast<int32_t>(width),
+                        rand() % static_cast<int32_t>(height) };
+        position end{ rand() % static_cast<int32_t>(width),
+                      rand() % static_cast<int32_t>(height) };
         color    color{ static_cast<uint8_t>(rand() % 256),
                      static_cast<uint8_t>(rand() % 256),
                      static_cast<uint8_t>(rand() % 256) };
@@ -37,7 +41,7 @@ int main(int, char**)
 
     image.save_image("01_lines.ppm");
 
-    canvas test_image;
+    canvas test_image(0, 0);
     test_image.load_image("01_lines.ppm");
 
     if (image != test_image)
@@ -52,10 +56,11 @@ int main(int, char**)
 
     auto end_time = std::chrono::high_resolution_clock::now();
     std::cout << "line time: "
-              << std::chrono::duration_cast<std::chrono::microseconds>(end_time -
-                                                                       begin_time)
+              << std::chrono::duration_cast<std::chrono::microseconds>(
+                     end_time - begin_time)
                      .count()
-              << " microseconds\n" << std::endl;
+              << " microseconds\n"
+              << std::endl;
 
     return 0;
 }

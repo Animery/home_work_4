@@ -5,7 +5,7 @@
 struct triangle_render : public line_render
 {
 
-    triangle_render(canvas& buffer, size_t width, size_t height);
+    triangle_render(canvas& buffer);
     void draw_triangle(position v0, position v1, position v2, color color);
 
 protected:

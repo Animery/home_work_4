@@ -1,7 +1,7 @@
 #include "../include/triangle_render.hpp"
 
-triangle_render::triangle_render(canvas& buffer, size_t width, size_t height)
-    : line_render(buffer, width, height)
+triangle_render::triangle_render(canvas& buffer)
+    : line_render(buffer)
 {
 }
 

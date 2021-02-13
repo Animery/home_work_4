@@ -1,9 +1,7 @@
 #include "../include/triangle_indexed_render.hpp"
 
-triangle_indexed_render::triangle_indexed_render(canvas& buffer,
-                                                 size_t  width,
-                                                 size_t  height)
-    : triangle_render(buffer, width, height)
+triangle_indexed_render::triangle_indexed_render(canvas& buffer)
+    : triangle_render(buffer)
 {
 }
 

@@ -2,10 +2,10 @@
 
 #include <algorithm>
 
-line_render::line_render(canvas& buffer_, size_t width, size_t height)
+line_render::line_render(canvas& buffer_)
     : buffer(buffer_)
-    , w(width)
-    , h(height)
+    , width(buffer_.getWidth())
+    , height(buffer_.getHeight())
 {
 }
 
@@ -17,7 +17,7 @@ void line_render::clear(color fill_color)
 void line_render::set_pixel(position pos, color mark_color)
 {
     const size_t pos_in_line =
-        static_cast<unsigned>(pos.y) * w + static_cast<unsigned>(pos.x);
+        static_cast<unsigned>(pos.y) * width + static_cast<unsigned>(pos.x);
     if (pos_in_line >= buffer.size())
     {
         return;

@@ -8,9 +8,12 @@ int main(int, char**)
     const color black = { 0, 0, 0 };
     const color green = { 0, 255, 0 };
 
-    canvas image;
+    constexpr uint16_t width      = 320 * 2;
+    constexpr uint16_t height     = 240 * 2;
 
-    triangle_render render_tri(image, width, height);
+    canvas image(width, height);
+
+    triangle_render render_tri(image);
     render_tri.clear(black);
 
     render_tri.draw_triangle(position{ 0, 0 },
@@ -42,9 +45,10 @@ int main(int, char**)
             render_tri.draw_triangle(v0, v3, v1, green);
         }
     }
+
     image.save_image("03_triangle_x.ppm");
 
-    canvas test_image;
+    canvas test_image(0,0);
     test_image.load_image("03_triangle_x.ppm");
 
     if (image != test_image)

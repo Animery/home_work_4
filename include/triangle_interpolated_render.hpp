@@ -50,7 +50,7 @@ struct gfx_program
 
 struct triangle_interpolated : triangle_indexed_render
 {
-    triangle_interpolated(canvas& buffer, size_t width, size_t height);
+    triangle_interpolated(canvas& buffer);
     void set_gfx_program(gfx_program& program) { program_ = &program; }
     void draw_triangles(vertexMap& vertexes, std::vector<uint16_t>& indexes);
 

@@ -2,6 +2,7 @@
 *.ppm
 
 # Folder
+temp/
 build/
 bin/
 lib/

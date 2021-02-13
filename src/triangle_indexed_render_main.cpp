@@ -7,7 +7,11 @@ int main(int, char**)
     auto        begin_time = std::chrono::high_resolution_clock::now();
     const color black = { 0, 0, 0 };
     const color green = { 0, 255, 0 };
-    canvas      image;
+
+    constexpr uint16_t width      = 320 * 2;
+    constexpr uint16_t height     = 240 * 2;
+
+    canvas image(width, height);
 
     std::vector<position> vertex_buffer;
 
@@ -51,14 +55,14 @@ int main(int, char**)
         }
     }
 
-    triangle_indexed_render indexed_render(image, width, height);
+    triangle_indexed_render indexed_render(image);
     indexed_render.clear(black);
 
     indexed_render.draw_triangles(vertex_buffer, index_buffer, green);
 
     image.save_image("04_triangles_indexes.ppm");
 
-    canvas test_image;
+    canvas test_image(0,0);
     test_image.load_image("04_triangles_indexes.ppm");
 
     if (image != test_image)

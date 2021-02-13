@@ -4,7 +4,7 @@
 
 struct line_render : protected irender
 {
-    line_render(canvas& buffer_, size_t width, size_t height);
+    line_render(canvas& buffer_);
     void draw_line(const position start, const position end, color);
     void draw_circle(const position start, const int radius, color);
     void clear(color) override;
@@ -16,6 +16,6 @@ protected:
 
 private:
     canvas&      buffer;
-    const size_t w;
-    const size_t h;
+    const size_t width;
+    const size_t height;
 };
