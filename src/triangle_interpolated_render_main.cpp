@@ -5,11 +5,11 @@
 
 int main(int, char**)
 {
-    auto           begin_time = std::chrono::high_resolution_clock::now();
-    const color    black      = { 0, 0, 0 };
+    auto        begin_time = std::chrono::high_resolution_clock::now();
+    const color black      = { 0, 0, 0 };
 
-    constexpr uint16_t width      = 320 * 2;
-    constexpr uint16_t height     = 240 * 2;
+    constexpr uint16_t width  = 320 * 2;
+    constexpr uint16_t height = 240 * 2;
 
     canvas image(width, height);
 
@@ -29,20 +29,20 @@ int main(int, char**)
         {
             vertex out = v_in;
 
-            // rotate
-            double alpha = 3.14159; // 180 degree
-            double x     = out.x;
-            double y     = out.y;
-            out.x        = x * std::cos(alpha) - y * std::sin(alpha);
-            out.y        = x * std::sin(alpha) + y * std::cos(alpha);
+            // // rotate
+            // double alpha = 3.14159; // 180 degree
+            // double x     = out.x;
+            // double y     = out.y;
+            // out.x        = x * std::cos(alpha) - y * std::sin(alpha);
+            // out.y        = x * std::sin(alpha) + y * std::cos(alpha);
 
-            // scale into 3 times
-            // out.x *= 0.5;
-            // out.y *= 0.5;
+            // // scale into 3 times
+            // // out.x *= 0.5;
+            // // out.y *= 0.5;
 
-            // move
-            out.x += (width / 1) - (width/2);
-            out.y += (height / 1);
+            // // move
+            // out.x += (width / 1) - (width/2);
+            // out.y += (height / 1);
 
             return out;
         }
@@ -61,14 +61,18 @@ int main(int, char**)
     interpolated_render.clear(black);
     interpolated_render.set_gfx_program(program01);
 
-    std::vector<vertex> triangle_v{
+    vertexMap triangle_v{
         { width / 2 - 1, 0, 1, 0, 0, width / 2 - 1, 0, 0 },
         { 0, height / 2 - 1, 0, 1, 0, 0, height / 2 - 1, 0 },
         { width / 2 - 1, height - 1, 0, 0, 1, width / 2 - 1, height - 1, 0 }
     };
-    std::vector<uint16_t> indexes_v{ 0, 1, 2 };
+    std::vector<uint16_t> indexes_tri_v{ 0, 1, 2 };
 
-    interpolated_render.draw_triangles(triangle_v, indexes_v);
+    vertexMap             circle_v{ { width / 2, height / 2, 1, 0, 0, 1, 1, 0 },
+                        { width / 2, height / 2 - 50, 0, 0, 1, 1, 1, 0 } };
+    std::vector<uint16_t> indexes_circle_v{ 0, 1 };
+    interpolated_render.draw_circle(circle_v, indexes_circle_v);
+    // interpolated_render.draw_triangles(triangle_v, indexes_tri_v);
 
     image.save_image("05_interpolated.ppm");
 
@@ -95,7 +99,7 @@ int main(int, char**)
         }
         color fragment_shader(const vertex& v_in) override
         {
-            color  out;
+            color out;
             // vertex v_out        = v_in;
 
             out.r = static_cast<uint8_t>(v_in.r * 255);
@@ -103,9 +107,9 @@ int main(int, char**)
             out.b = static_cast<uint8_t>(v_in.b * 255);
 
             color from_texture = sample2d(v_in);
-            out.r = from_texture.r;
-            out.g = from_texture.g;
-            out.b = from_texture.b;
+            out.r              = from_texture.r;
+            out.g              = from_texture.g;
+            out.b              = from_texture.b;
             return out;
         }
 
@@ -118,7 +122,6 @@ int main(int, char**)
 
             color c = texture.at(v * width + u);
             return c;
-
         }
     } program02;
     program02.set_uniforms(uniforms{ static_cast<double>(image.getWidth()),
@@ -129,7 +132,7 @@ int main(int, char**)
 
     interpolated_render.clear(black);
 
-    interpolated_render.draw_triangles(triangle_v, indexes_v);
+    interpolated_render.draw_triangles(triangle_v, indexes_tri_v);
 
     image.save_image("06_textured_triangle.ppm");
 

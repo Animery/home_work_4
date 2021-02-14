@@ -203,8 +203,9 @@ void triangle_interpolated::raster_one_horizontal_line(
         {
             double t_pixel = static_cast<double>(p) / num_of_pixels_in_line;
             vertex pixel   = interpolate(left_vertex, right_vertex, t_pixel);
-
             out.push_back(pixel);
+            // std::cout << "t_pixel: " << t_pixel << "\tp = " << p
+            //           << "\tsize_result: " << out.size() << std::endl;
         }
     }
     else
@@ -221,5 +222,122 @@ void triangle_interpolated::draw_pix(const vertexMap& v_map)
         const position pos{ static_cast<int32_t>(std::round(i.x)),
                             static_cast<int32_t>(std::round(i.y)) };
         set_pixel(pos, col);
+    }
+}
+
+void triangle_interpolated::draw_circle(vertexMap&             vertexes,
+                                        std::vector<uint16_t>& indexes)
+{
+
+    const size_t size = indexes.size();
+    for (size_t i = 0; i < size / 2; ++i)
+    {
+        const uint16_t index_center = indexes.at(i * 3 + 0);
+        const uint16_t index_border = indexes.at(i * 3 + 1);
+
+        const vertex& v0 = vertexes.at(index_center);
+        const vertex& v1 = vertexes.at(index_border);
+
+        const vertex start_v  = program_->vertex_shader(v0);
+        const vertex border_v = program_->vertex_shader(v1);
+
+        const vertexMap interpoleted =
+            rasterize_circle_vertex(start_v, border_v);
+
+        draw_pix(interpoleted);
+    }
+}
+
+vertexMap triangle_interpolated::rasterize_circle_vertex(const vertex& start,
+                                                         const vertex& border)
+{
+    vertexMap result;
+    result.push_back(start);
+
+    // double radius = std::abs(start.length() - border.length());
+    double radius = std::abs((start.x + start.y) - (border.x + border.y));
+    result.reserve(static_cast<size_t>(radius * radius * 3.14 * 8));
+    rasterize_round_vertex(border, radius, result);
+
+    size_t size = result.size();
+    std::cout << "SIZE_round = " << size << "\tsize_result: " << result.size()
+              << std::endl;
+    for (size_t i = 1; i < size; i++)
+    {
+        rasterize_line_circle(result[0], result[i], radius, result);
+    }
+    std::cout << "SIZE_round = " << size << "\tsize_result: " << result.size()
+              << "\tresult.capacity(): " << result.capacity() << std::endl;
+    std::cout << "radius = " << radius << std::endl;
+    return result;
+}
+
+void triangle_interpolated::rasterize_round_vertex(const vertex& border,
+                                                   double        radius,
+                                                   vertexMap&    out)
+{
+    // double radius = std::abs(position{ out[0].x, out[0].y }.length() -
+    //                          position{ border.x, border.y }.length());
+
+    int x     = 0;
+    int y     = radius;
+    int delta = 1 - 2 * radius;
+    int error = 0;
+
+    while (y >= 0)
+    {
+        // clang-format off
+        out.push_back(vertex{ out[0].x + x, out[0].y + y, border.r, border.g, border.b, border.x_tex, border.y_tex, border.f7});
+        out.push_back(vertex{ out[0].x + x, out[0].y - y, border.r, border.g, border.b, border.x_tex, border.y_tex, border.f7 });
+        out.push_back(vertex{ out[0].x - x, out[0].y + y, border.r, border.g, border.b, border.x_tex, border.y_tex, border.f7 });
+        out.push_back(vertex{ out[0].x - x, out[0].y - y, border.r, border.g, border.b, border.x_tex, border.y_tex, border.f7 });
+        // clang-format on
+
+        error = 2 * (delta + y) - 1;
+        if (delta < 0 && error <= 0)
+        {
+            ++x;
+            delta += 2 * x + 1;
+            continue;
+        }
+        error = 2 * (delta - x) - 1;
+        if (delta > 0 && error > 0)
+        {
+            --y;
+            delta += 1 - 2 * y;
+            continue;
+        }
+        ++x;
+        delta += 2 * (x - y);
+        --y;
+    }
+}
+
+void triangle_interpolated::rasterize_line_circle(const vertex& left_vertex,
+                                                  const vertex& right_vertex,
+                                                  double        radius,
+                                                  vertexMap&    out)
+{
+    // use *1.45 pixels to garantee no empty black pixels
+    size_t num_of_pixels_in_line = static_cast<size_t>(radius * 4);
+    // static_cast<size_t>(
+    //     std::abs(left_vertex.length() - right_vertex.length())) *
+    // 1.45;
+    // std::cout << "num_of_pixels_in_line: " << num_of_pixels_in_line
+    //           << std::endl;
+    if (num_of_pixels_in_line > 0)
+    {
+        for (size_t p = 0; p < num_of_pixels_in_line + 1; ++p)
+        {
+            double t_pixel = static_cast<double>(p) / num_of_pixels_in_line;
+            vertex pixel   = interpolate(left_vertex, right_vertex, t_pixel);
+            out.push_back(pixel);
+            // std::cout << "t_pixel: " << t_pixel << "\tp = " << p
+            //           << "\tsize_result: " << out.size() << std::endl;
+        }
+    }
+    else
+    {
+        out.push_back(left_vertex);
     }
 }
