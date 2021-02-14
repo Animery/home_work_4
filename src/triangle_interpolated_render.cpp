@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
+constexpr int accuracy_ratio = 4;
+
 std::ostream& operator<<(std::ostream& out, const position& v)
 {
     out << "x: " << v.x << "\t";
@@ -204,8 +206,6 @@ void triangle_interpolated::raster_one_horizontal_line(
             double t_pixel = static_cast<double>(p) / num_of_pixels_in_line;
             vertex pixel   = interpolate(left_vertex, right_vertex, t_pixel);
             out.push_back(pixel);
-            // std::cout << "t_pixel: " << t_pixel << "\tp = " << p
-            //           << "\tsize_result: " << out.size() << std::endl;
         }
     }
     else
@@ -254,9 +254,11 @@ vertexMap triangle_interpolated::rasterize_circle_vertex(const vertex& start,
     vertexMap result;
     result.push_back(start);
 
-    // double radius = std::abs(start.length() - border.length());
     double radius = std::abs((start.x + start.y) - (border.x + border.y));
-    result.reserve(static_cast<size_t>(radius * radius * 3.14 * 8));
+
+    // need reserve  ??  dont work 
+    result.reserve(static_cast<size_t>(radius * radius * 3.14 * (accuracy_ratio*2)));
+
     rasterize_round_vertex(border, radius, result);
 
     size_t size = result.size();
@@ -276,9 +278,6 @@ void triangle_interpolated::rasterize_round_vertex(const vertex& border,
                                                    double        radius,
                                                    vertexMap&    out)
 {
-    // double radius = std::abs(position{ out[0].x, out[0].y }.length() -
-    //                          position{ border.x, border.y }.length());
-
     int x     = 0;
     int y     = radius;
     int delta = 1 - 2 * radius;
@@ -318,13 +317,9 @@ void triangle_interpolated::rasterize_line_circle(const vertex& left_vertex,
                                                   double        radius,
                                                   vertexMap&    out)
 {
-    // use *1.45 pixels to garantee no empty black pixels
-    size_t num_of_pixels_in_line = static_cast<size_t>(radius * 4);
-    // static_cast<size_t>(
-    //     std::abs(left_vertex.length() - right_vertex.length())) *
-    // 1.45;
-    // std::cout << "num_of_pixels_in_line: " << num_of_pixels_in_line
-    //           << std::endl;
+    // use * accuracy_ratio pixels to garantee no empty black pixels
+    // need  more  accuracy_ratio
+    size_t num_of_pixels_in_line = static_cast<size_t>(radius * accuracy_ratio);
     if (num_of_pixels_in_line > 0)
     {
         for (size_t p = 0; p < num_of_pixels_in_line + 1; ++p)
@@ -332,8 +327,6 @@ void triangle_interpolated::rasterize_line_circle(const vertex& left_vertex,
             double t_pixel = static_cast<double>(p) / num_of_pixels_in_line;
             vertex pixel   = interpolate(left_vertex, right_vertex, t_pixel);
             out.push_back(pixel);
-            // std::cout << "t_pixel: " << t_pixel << "\tp = " << p
-            //           << "\tsize_result: " << out.size() << std::endl;
         }
     }
     else
