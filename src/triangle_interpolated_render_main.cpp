@@ -58,6 +58,17 @@ int main(int, char**)
 
     program01.set_uniforms(uniforms{ static_cast<double>(image.getWidth()),
                                      static_cast<double>(image.getHeight()) });
+
+    // drow round
+    line_render render(image);
+
+    render.clear(black);
+
+    render.draw_circle(position{ width / 2, height / 2 }, 50, color{ 0, 0, 255 });
+
+    image.save_image("05_round.ppm");
+
+    // drow Circle
     interpolated_render.clear(black);
     interpolated_render.set_gfx_program(program01);
 

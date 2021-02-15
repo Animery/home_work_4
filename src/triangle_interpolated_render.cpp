@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-constexpr int accuracy_ratio = 4;
+constexpr double accuracy_ratio = 1.45;
 
 std::ostream& operator<<(std::ostream& out, const position& v)
 {
@@ -256,10 +256,12 @@ vertexMap triangle_interpolated::rasterize_circle_vertex(const vertex& start,
 
     double radius = std::abs((start.x + start.y) - (border.x + border.y));
 
-    // need reserve  ??  dont work 
-    result.reserve(static_cast<size_t>(radius * radius * 3.14 * (accuracy_ratio*2)));
+    // need reserve  ??  dont work
+    result.reserve(
+        static_cast<size_t>(radius * radius * 3.14 * (accuracy_ratio * 4)));
 
     rasterize_round_vertex(border, radius, result);
+    rasterize_round_vertex(border, radius - 1, result);
 
     size_t size = result.size();
     std::cout << "SIZE_round = " << size << "\tsize_result: " << result.size()
