@@ -261,6 +261,7 @@ vertexMap triangle_interpolated::rasterize_circle_vertex(const vertex& start,
         static_cast<size_t>(radius * radius * 3.14 * (accuracy_ratio * 4)));
 
     rasterize_round_vertex(border, radius, result);
+    // hack for accuracy
     rasterize_round_vertex(border, radius - 1, result);
 
     size_t size = result.size();
