@@ -9,7 +9,6 @@
 // #include <iostream>
 // #include <iomanip>
 
-
 #pragma pack(push, 1)
 /*
 uint8_t     r = 0;
@@ -53,23 +52,35 @@ public:
         std::ifstream in_file(file_name, std::ios_base::binary);
         in_file.exceptions(std::ios_base::failbit);
         std::string header;
-        uint16_t      image_width  = 0;
-        uint16_t      image_height = 0;
-        uint16_t      color_format = 0;
+        uint16_t    image_width    = 0;
+        uint16_t    image_height   = 0;
+        uint16_t    color_format   = 0;
+        char        last_next_line = 0;
 
-        // char last_next_line = 0;
-        // in_file >> header >> image_width >> image_height >> color_format >>
-        //     last_next_line;
+        in_file >> header >> image_width >> image_height >> color_format;
 
-        in_file >> header >> image_width >> image_height >> color_format >>
-            std::ws;
+        in_file.read(&last_next_line, 1);
+        if (!iswspace(last_next_line))
+        {
+            throw std::runtime_error("expected witespace");
+        }
+
+        width  = image_width;
+        height = image_height;
         resize(image_width * image_height);
+
         std::streamsize buf_size =
             static_cast<std::streamsize>(sizeof(color) * size());
         in_file.read(reinterpret_cast<char*>(data()), buf_size);
     }
     uint16_t getWidth() { return width; }
     uint16_t getHeight() { return height; }
+
+    color get_pixel(size_t x, size_t y) const
+    {
+        const size_t liner_index_in_buffer = width * y + x;
+        return at(liner_index_in_buffer);
+    }
 
 private:
     uint16_t width  = 0;

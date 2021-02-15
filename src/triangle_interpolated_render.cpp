@@ -271,7 +271,7 @@ vertexMap triangle_interpolated::rasterize_circle_vertex(const vertex& start,
     }
     std::cout << "radius = " << radius << std::endl;
     std::cout << "SIZE_round = " << size << "\tsize_result: " << result.size()
-              << "\tresult.capacity(): " << result.capacity() << std::endl;
+              << "\tresult.capacity: " << result.capacity() << std::endl;
     return result;
 }
 
@@ -320,6 +320,11 @@ void triangle_interpolated::rasterize_line_circle(const vertex& left_vertex,
 {
     // use * accuracy_ratio pixels to garantee no empty black pixels
     // need  more  accuracy_ratio
+    if (radius < 0)
+    {
+        return;
+    }
+
     size_t num_of_pixels_in_line = static_cast<size_t>(radius * accuracy_ratio);
     if (num_of_pixels_in_line > 0)
     {

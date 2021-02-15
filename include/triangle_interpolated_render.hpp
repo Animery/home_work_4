@@ -29,16 +29,28 @@ double interpolate(const double first, const double second, const double t);
 
 vertex interpolate(const vertex& v0, const vertex& v1, const double t);
 
+/*
+double f0 = 0;
+double f1 = 0;
+double f2 = 0;
+double f3 = 0;
+double f4 = 0;
+double f5 = 0;                  // width  Image
+double f6 = 0;                  // height Image
+double f7 = 0;                  // time_from_start
+canvas* texture0 = nullptr;     // ptr Texture 
+*/
 struct uniforms
 {
-    double f0 = 0;
-    double f1 = 0;
-    double f2 = 0;
-    double f3 = 0;
-    double f4 = 0;
-    double f5 = 0;
-    double f6 = 0;
-    double f7 = 0;
+    double  f0       = 0;
+    double  f1       = 0;
+    double  f2       = 0;
+    double  f3       = 0;
+    double  f4       = 0;
+    double  f5       = 0;       // width  Image
+    double  f6       = 0;       // height Image
+    double  f7       = 0;       // time_from_start
+    canvas* texture0 = nullptr; // ptr Texture
 };
 
 struct gfx_program
@@ -72,11 +84,13 @@ private:
 
     vertexMap rasterize_circle_vertex(const vertex& start,
                                       const vertex& border);
-    void      rasterize_round_vertex(const vertex& border,double radius, vertexMap& out);
+    void      rasterize_round_vertex(const vertex& border,
+                                     double        radius,
+                                     vertexMap&    out);
     void      rasterize_line_circle(const vertex& left_vertex,
-                             const vertex& right_vertex,
-                             double radius,
-                             vertexMap&    out);
+                                    const vertex& right_vertex,
+                                    double        radius,
+                                    vertexMap&    out);
 
     gfx_program* program_ = nullptr;
 };
