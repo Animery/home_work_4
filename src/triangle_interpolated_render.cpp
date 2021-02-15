@@ -265,15 +265,13 @@ vertexMap triangle_interpolated::rasterize_circle_vertex(const vertex& start,
     rasterize_round_vertex(border, radius - 1, result);
 
     size_t size = result.size();
-    std::cout << "SIZE_round = " << size << "\tsize_result: " << result.size()
-              << std::endl;
     for (size_t i = 1; i < size; i++)
     {
         rasterize_line_circle(result[0], result[i], radius, result);
     }
+    std::cout << "radius = " << radius << std::endl;
     std::cout << "SIZE_round = " << size << "\tsize_result: " << result.size()
               << "\tresult.capacity(): " << result.capacity() << std::endl;
-    std::cout << "radius = " << radius << std::endl;
     return result;
 }
 
