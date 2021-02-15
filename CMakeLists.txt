@@ -54,23 +54,29 @@ target_link_libraries(basic-windowed PRIVATE SDL2::SDL2-static SDL2::SDL2main)
 target_compile_features(basic-windowed PUBLIC cxx_std_17)
 
 if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/src/image_leo.cpp) 
-message("\nFound src/image_leo.cpp\n")
+message("\nFound image_leo.cpp\n")
+        if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/resource/Star.ppm)
+                message("Found Star.ppm\n")
+        
+                file(COPY resource/Star.ppm DESTINATION .)
 
-file(COPY resource/Star.ppm DESTINATION .)
-add_executable(image-leo        src/image_leo.cpp
-                                src/triangle_interpolated_render.cpp
-                                include/triangle_interpolated_render.hpp
-                                src/canvas.cpp
-                                src/line_render.cpp
-                                src/triangle_render.cpp
-                                src/triangle_indexed_render.cpp
-                                )
-
-target_link_libraries(image-leo PRIVATE SDL2::SDL2 SDL2::SDL2main)
-target_compile_features(image-leo PUBLIC cxx_std_17)
-install(FILES  target2.bmp  DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin)
+                add_executable(image-leo        src/image_leo.cpp
+                                                src/triangle_interpolated_render.cpp
+                                                include/triangle_interpolated_render.hpp
+                                                src/canvas.cpp
+                                                src/line_render.cpp
+                                                src/triangle_render.cpp
+                                                src/triangle_indexed_render.cpp
+                                                )
+                
+                target_link_libraries(image-leo PRIVATE SDL2::SDL2 SDL2::SDL2main)
+                target_compile_features(image-leo PUBLIC cxx_std_17)
+                install(FILES  target2.bmp  DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin)
+        else()
+                message("Not found Star.ppm\n")
+        endif()
 else()
-message("\nNot found src/image_leo.cpp\n")
+message("Not found image_leo.cpp\n")
 endif()
 
 
