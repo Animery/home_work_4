@@ -3,11 +3,11 @@
 
 #include <SDL2/SDL.h>
 
-#include <cmath>
-#include <cstdlib>
-
 #include <algorithm>
 #include <chrono>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 
 int main(int, char**)
@@ -111,9 +111,11 @@ int main(int, char**)
 
     board.set_gfx_program(*current_program);
 
-    bool continue_loop = true;
-
-    double scale = 1;
+    bool   continue_loop = true;
+    double scale         = 1;
+    auto   previous_time = std::chrono::high_resolution_clock::now();
+    time_t     rawtime;
+    tm* timeinfo;
 
     while (continue_loop)
     {
@@ -149,46 +151,67 @@ int main(int, char**)
                 }
             }
         }
+        auto now_time   = std::chrono::high_resolution_clock::now();
+        auto delta_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+            now_time - previous_time);
 
-        board.clear(black);
-        double       time_from_start = SDL_GetTicks() / 1000.0;
-        const double w_in_ren        = image.getWidth();
-        const double h_in_ren        = image.getHeight();
-        current_program->set_uniforms(uniforms{ 0,
-                                                0,
-                                                0,
-                                                0,
-                                                scale,
-                                                w_in_ren,
-                                                h_in_ren,
-                                                time_from_start,
-                                                &texture_arrow,
-                                                &texture_cirle });
-
-        board.draw_triangles(board_vM, indexes_board_v);
-
-        SDL_Surface* bitmapSurface = SDL_CreateRGBSurfaceFrom(
-            pixels, width, height, depth, pitch, rmask, gmask, bmask, amask);
-        if (bitmapSurface == nullptr)
+        if (delta_time.count() > 500)
         {
-            std::cerr << SDL_GetError() << std::endl;
-            return EXIT_FAILURE;
+
+            board.clear(black);
+            // double       time_from_start = SDL_GetTicks() / 1000.0;
+            
+
+            time(&rawtime);
+            timeinfo                     = localtime(&rawtime);
+            double       time_from_start = timeinfo->tm_sec;
+            std::cout <<"time_from_start" << time_from_start << std::endl;
+            const double w_in_ren        = image.getWidth();
+            const double h_in_ren        = image.getHeight();
+            current_program->set_uniforms(uniforms{ 0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    scale,
+                                                    w_in_ren,
+                                                    h_in_ren,
+                                                    time_from_start,
+                                                    &texture_arrow,
+                                                    &texture_cirle });
+
+            board.draw_triangles(board_vM, indexes_board_v);
+
+            SDL_Surface* bitmapSurface = SDL_CreateRGBSurfaceFrom(pixels,
+                                                                  width,
+                                                                  height,
+                                                                  depth,
+                                                                  pitch,
+                                                                  rmask,
+                                                                  gmask,
+                                                                  bmask,
+                                                                  amask);
+            if (bitmapSurface == nullptr)
+            {
+                std::cerr << SDL_GetError() << std::endl;
+                return EXIT_FAILURE;
+            }
+            SDL_Texture* bitmapTex =
+                SDL_CreateTextureFromSurface(renderer, bitmapSurface);
+            if (bitmapTex == nullptr)
+            {
+                std::cerr << SDL_GetError() << std::endl;
+                return EXIT_FAILURE;
+            }
+            SDL_FreeSurface(bitmapSurface);
+
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, bitmapTex, nullptr, nullptr);
+
+            SDL_RenderPresent(renderer);
+
+            SDL_DestroyTexture(bitmapTex);
+            previous_time = now_time;
         }
-        SDL_Texture* bitmapTex =
-            SDL_CreateTextureFromSurface(renderer, bitmapSurface);
-        if (bitmapTex == nullptr)
-        {
-            std::cerr << SDL_GetError() << std::endl;
-            return EXIT_FAILURE;
-        }
-        SDL_FreeSurface(bitmapSurface);
-
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, bitmapTex, nullptr, nullptr);
-
-        SDL_RenderPresent(renderer);
-
-        SDL_DestroyTexture(bitmapTex);
     }
 
     SDL_DestroyRenderer(renderer);

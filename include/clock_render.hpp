@@ -138,7 +138,7 @@ struct rotate_image : program
 
 
         // rotate
-        double alpha = (3.14159 / 2) * uniforms_.f7 * 1;
+        double alpha = (3.14159) * (uniforms_.f7/30) * 1;
         double x     = out.x;
         double y     = out.y;
         out.x        = x * std::cos(alpha) - y * std::sin(alpha);
