@@ -78,8 +78,15 @@ public:
 
     color get_pixel(size_t x, size_t y) const
     {
-        const size_t liner_index_in_buffer = width * y + x;
-        return at(liner_index_in_buffer);
+        if (y < height)
+        {
+            if (y <= height && x < width)
+            {
+                const size_t liner_index_in_buffer = width * y + x;
+                return at(liner_index_in_buffer);
+            }
+        }
+        return color{ 0, 0, 0 };
     }
 
 private:

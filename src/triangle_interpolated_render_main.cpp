@@ -84,8 +84,25 @@ int main(int, char**)
     std::vector<uint16_t> indexes_circle_v{ 0, 1 };
     interpolated_render.draw_circle(circle_v, indexes_circle_v);
     // interpolated_render.draw_triangles(triangle_v, indexes_tri_v);
-
     image.save_image("05_interpolated.ppm");
+
+    canvas                texture(width, height);
+    triangle_interpolated arrow(texture);
+    // clang-format off
+    const double w_tex = texture.getWidth();
+    const double h_tex = texture.getHeight();
+    //                    x                         y              r  g  b  tx     ty
+    vertexMap arrow_vM{ { w_tex / 2 - 1,            h_tex / 2 - 1, 0, 0, 1, 1/2,   1/2, 0 },
+                        { w_tex / 2 - 1 + w_tex/64, h_tex / 3,     1, 0, 0, 33/64, 1/3, 0 },
+                        { w_tex / 2 - 1 - w_tex/64, h_tex / 3,     1, 0, 0, 31/64, 1/3, 0 },
+                        { w_tex / 2 - 1,            h_tex / 6,     0, 0, 1, 1/2,   1/6, 0 } };
+    // clang-format on
+    std::vector<uint16_t> indexes_arrow_v{ { 0, 1, 2, 1, 2, 3 } };
+    arrow.clear(black);
+    arrow.set_gfx_program(program01);
+    arrow.draw_triangles(arrow_vM, indexes_arrow_v);
+    texture.save_image("arrow.ppm");
+
 
     // texture example
     struct program_tex : gfx_program
@@ -126,8 +143,8 @@ int main(int, char**)
 
         color sample2d(const vertex& sample)
         {
-            uint32_t u = static_cast<uint32_t>(std::round(sample.x_tex));
-            uint32_t v = static_cast<uint32_t>(std::round(sample.y_tex));
+            uint32_t u = static_cast<uint32_t>(std::round(sample.x));
+            uint32_t v = static_cast<uint32_t>(std::round(sample.y));
 
             color c = texture.at(v * width + u);
             return c;

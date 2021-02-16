@@ -6,3 +6,4 @@ build/
 bin/
 lib/
 .vscode/
+clock/

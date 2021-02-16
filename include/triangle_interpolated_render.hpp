@@ -2,6 +2,14 @@
 
 #include "triangle_indexed_render.hpp"
 
+/*FULL = 0
+ROUND = 1*/
+enum class Flagcircle
+{
+    FULL,
+    ROUND
+};
+
 /*double x  = 0;
     double y  = 0;
     double r  = 0;
@@ -34,11 +42,12 @@ double f0 = 0;
 double f1 = 0;
 double f2 = 0;
 double f3 = 0;
-double f4 = 0;
+double f4 = 0;                  // scale
 double f5 = 0;                  // width  Image
 double f6 = 0;                  // height Image
 double f7 = 0;                  // time_from_start
-canvas* texture0 = nullptr;     // ptr Texture 
+canvas* texture0 = nullptr;     // ptr Texture
+canvas* texture1 = nullptr;     // ptr Texture
 */
 struct uniforms
 {
@@ -46,11 +55,12 @@ struct uniforms
     double  f1       = 0;
     double  f2       = 0;
     double  f3       = 0;
-    double  f4       = 0;
+    double  f4       = 0;       // scale
     double  f5       = 0;       // width  Image
     double  f6       = 0;       // height Image
     double  f7       = 0;       // time_from_start
     canvas* texture0 = nullptr; // ptr Texture
+    canvas* texture1 = nullptr; // ptr Texture
 };
 
 struct gfx_program
@@ -66,7 +76,9 @@ struct triangle_interpolated : triangle_indexed_render
     triangle_interpolated(canvas& buffer);
     void set_gfx_program(gfx_program& program) { program_ = &program; }
     void draw_triangles(vertexMap& vertexes, std::vector<uint16_t>& indexes);
-    void draw_circle(vertexMap& start, std::vector<uint16_t>& indexes);
+    void draw_circle(vertexMap&,
+                     std::vector<uint16_t>&,
+                     Flagcircle flag = Flagcircle::FULL);
 
 private:
     vertexMap rasterize_triangle(const vertex& v0,
@@ -83,7 +95,8 @@ private:
     void draw_pix(const vertexMap& v_map);
 
     vertexMap rasterize_circle_vertex(const vertex& start,
-                                      const vertex& border);
+                                      const vertex& border,
+                                      Flagcircle    flag);
     void      rasterize_round_vertex(const vertex& border,
                                      double        radius,
                                      vertexMap&    out);

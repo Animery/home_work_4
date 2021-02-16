@@ -226,7 +226,8 @@ void triangle_interpolated::draw_pix(const vertexMap& v_map)
 }
 
 void triangle_interpolated::draw_circle(vertexMap&             vertexes,
-                                        std::vector<uint16_t>& indexes)
+                                        std::vector<uint16_t>& indexes,
+                                        Flagcircle flag)
 {
 
     const size_t size = indexes.size();
@@ -242,36 +243,41 @@ void triangle_interpolated::draw_circle(vertexMap&             vertexes,
         const vertex border_v = program_->vertex_shader(v1);
 
         const vertexMap interpoleted =
-            rasterize_circle_vertex(start_v, border_v);
+            rasterize_circle_vertex(start_v, border_v, flag);
 
         draw_pix(interpoleted);
     }
 }
 
 vertexMap triangle_interpolated::rasterize_circle_vertex(const vertex& start,
-                                                         const vertex& border)
+                                                         const vertex& border,
+                                                         Flagcircle    flag)
 {
     vertexMap result;
     result.push_back(start);
 
     double radius = std::abs((start.x + start.y) - (border.x + border.y));
 
-    // need reserve  ??  dont work
-    result.reserve(
-        static_cast<size_t>(radius * radius * 3.14 * (accuracy_ratio * 4)));
-
     rasterize_round_vertex(border, radius, result);
     // hack for accuracy
     rasterize_round_vertex(border, radius - 1, result);
 
-    size_t size = result.size();
-    for (size_t i = 1; i < size; i++)
+    if (flag == Flagcircle::FULL)
     {
-        rasterize_line_circle(result[0], result[i], radius, result);
+        // need reserve  ??  dont work
+        result.reserve(
+            static_cast<size_t>(radius * radius * 3.14 * (accuracy_ratio * 4)));
+        size_t size = result.size();
+        for (size_t i = 1; i < size; i++)
+        {
+            rasterize_line_circle(result[0], result[i], radius, result);
+        }
+        // std::cout << "radius = " << radius << std::endl;
+        // std::cout << "SIZE_round = " << size << "\tsize_result: " <<
+        // result.size()
+        //           << "\tresult.capacity: " << result.capacity() << std::endl;
     }
-    std::cout << "radius = " << radius << std::endl;
-    std::cout << "SIZE_round = " << size << "\tsize_result: " << result.size()
-              << "\tresult.capacity: " << result.capacity() << std::endl;
+
     return result;
 }
 

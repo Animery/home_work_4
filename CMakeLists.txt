@@ -71,7 +71,7 @@ message("\nFound image_leo.cpp\n")
                 
                 target_link_libraries(image-leo PRIVATE SDL2::SDL2 SDL2::SDL2main)
                 target_compile_features(image-leo PUBLIC cxx_std_17)
-                install(FILES  target2.bmp  DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin)
+                install(FILES  resource/Star.ppm  DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin)
         else()
                 message("Not found Star.ppm\n")
         endif()
@@ -79,10 +79,23 @@ else()
 message("Not found image_leo.cpp\n")
 endif()
 
+add_executable(clock_render     src/clock_render.cpp
+                                include/clock_render.hpp
+                                src/triangle_interpolated_render.cpp
+                                include/triangle_interpolated_render.hpp
+                                src/canvas.cpp
+                                src/line_render.cpp
+                                src/triangle_render.cpp
+                                src/triangle_indexed_render.cpp
+                                )
+                
+target_link_libraries(clock_render PRIVATE SDL2::SDL2 SDL2::SDL2main)
+target_compile_features(clock_render PUBLIC cxx_std_17)
 
 
 
-install(TARGETS 1_canvas #2_line_render 3_triangle_render 4_triangle_indexed 5_triangle-interpolated basic-windowed image-leo
+
+install(TARGETS 1_canvas clock_render #2_line_render 3_triangle_render 4_triangle_indexed 5_triangle-interpolated basic-windowed image-leo
         RUNTIME DESTINATION ${CMAKE_CURRENT_LIST_DIR}/bin
         LIBRARY DESTINATION ${CMAKE_CURRENT_LIST_DIR}/lib
         ARCHIVE DESTINATION ${CMAKE_CURRENT_LIST_DIR}/lib)
