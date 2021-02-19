@@ -13,8 +13,8 @@
 
 int main(int, char**)
 {
-    constexpr uint16_t width        = 320 * 4;
-    constexpr uint16_t height       = 240 * 4;
+    constexpr uint16_t width        = 320 * 2;
+    constexpr uint16_t height       = 240 * 2;
     constexpr size_t   refresh_rate = 1000 / 4;
 
     // using namespace std;
@@ -102,7 +102,7 @@ int main(int, char**)
     // clang-format off
     arrow second_hand(width, height, second_hand_width, second_hand_height, black);
     arrow minute_hand(width, height, minute_hand_width, minute_hand_height, black);
-    arrow hour_hand(width, height, hour_hand_width, hour_hand_height, black);
+    arrow hour_hand  (width, height, hour_hand_width,   hour_hand_height,   black);
     // clang-format on
     // TEXTURE arrow END
 
