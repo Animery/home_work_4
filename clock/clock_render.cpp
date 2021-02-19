@@ -78,11 +78,11 @@ int main(int, char**)
     circle.draw_circle(circle_vM, indexes_circle_v, Flagcircle::ROUND);
 
     // clang-format off
-    //                  x                 y                  r    g    b    tx   ty
-    vertexMap numbers{ { w_circle / 2    ,     h_circle / 5, 0.1, 0.1, 0.1, 1/2, 1/5, 0 },
-                       { w_circle / 2 + 3,     h_circle / 4.5, 0.1, 0.1, 0.1, 1/2, 1/4, 0 },
-                       { w_circle / 2 - 3,     h_circle / 4.5, 0.1, 0.1, 0.1, 1/2, 1/4, 0 },
-                       { w_circle / 2    , 4 * h_circle / 5, 0.1, 0.1, 0.1, 1/2, 4/5, 0 },
+    //                  x                 y                      r    g    b    tx   ty
+    vertexMap numbers{ { w_circle / 2    ,     h_circle / 5,     0.1, 0.1, 0.1, 1/2, 1/5, 0 },
+                       { w_circle / 2 + 3,     h_circle / 4.5,   0.1, 0.1, 0.1, 1/2, 1/4, 0 },
+                       { w_circle / 2 - 3,     h_circle / 4.5,   0.1, 0.1, 0.1, 1/2, 1/4, 0 },
+                       { w_circle / 2    , 4 * h_circle / 5,     0.1, 0.1, 0.1, 1/2, 4/5, 0 },
                        { w_circle / 2 - 3, 3.5 * h_circle / 4.5, 0.1, 0.1, 0.1, 1/2, 3/4, 0 },
                        { w_circle / 2 + 3, 3.5 * h_circle / 4.5, 0.1, 0.1, 0.1, 1/2, 3/4, 0 }};
 
