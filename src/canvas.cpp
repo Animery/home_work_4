@@ -7,6 +7,11 @@ bool operator==(const color& l, const color& r)
     return l.r == r.r && l.g == r.g && l.b == r.b;
 }
 
+bool operator!=(const color& l, const color& r)
+{
+    return l.r != r.r || l.g != r.g || l.b != r.b;
+}
+
 constexpr size_t color_size = sizeof(color);
 
 static_assert(3 == color_size, "24 bit per pixel(r,g,b)");

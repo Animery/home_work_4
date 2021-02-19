@@ -44,10 +44,10 @@ int main(int, char**)
 
     const color black = { 0, 0, 0 };
 
+    canvas image(width, height);
     canvas texture(0, 0);
     texture.load_image("Star.ppm");
 
-    canvas image(width, height);
 
     triangle_interpolated interpolated_render(image);
 
@@ -125,8 +125,8 @@ int main(int, char**)
             out.x -= (uniforms_.f5 * scale);
             out.y -= (uniforms_.f6 * scale);
 
-            out.x *= scale;
-            out.y *= scale;
+            // out.x *= scale;
+            // out.y *= scale;
 
             // rotate
             double alpha = (3.14159 / 2) * uniforms_.f7 * 1;

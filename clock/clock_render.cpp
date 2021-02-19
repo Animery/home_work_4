@@ -1,5 +1,6 @@
 // #include "../include/triangle_interpolated_render.hpp"
-#include "../include/clock_render.hpp"
+#include "arrow.hpp"
+#include "gfx.hpp"
 
 #include <SDL2/SDL.h>
 
@@ -44,45 +45,10 @@ int main(int, char**)
         return EXIT_FAILURE;
     }
 
-    const color black = { 0, 0, 0 };
-    gfx::program   gfx_00;
+    const color  black = { 0, 0, 0 };
+    gfx::program gfx_01;
 
-    // TEXTURE arrow
-    canvas                texture_arrow(width, height);
-    triangle_interpolated arrow(texture_arrow);
-
-    // clang-format off
-    const double w_arrow = texture_arrow.getWidth();
-    const double h_arrow = texture_arrow.getHeight();
-    //                    x                       y                r  g  b  tx     ty
-    vertexMap arrow_vM{ { w_arrow / 2 - 1,        h_arrow / 2 - 1, 0, 0, 1, 1/2,   1/2, 0 },
-                        { (33 * w_arrow)/64 - 1 , h_arrow / 3,     1, 0, 0, 33/64, 1/3, 0 },
-                        { (31 * w_arrow)/64 - 1,  h_arrow / 3,     1, 0, 0, 31/64, 1/3, 0 },
-                        { w_arrow / 2 - 1,        h_arrow / 8,     0, 0, 1, 1/2,   1/6, 0 } };
-    // clang-format on
-    std::vector<uint16_t> indexes_arrow_v{ { 0, 1, 2, 1, 2, 3 } };
-    arrow.clear(black);
-    arrow.set_gfx_program(gfx_00);
-    arrow.draw_triangles(arrow_vM, indexes_arrow_v);
-    // TEXTURE
-
-    // TEXTURE circle
-    canvas                texture_cirle(width, height);
-    triangle_interpolated circle(texture_cirle);
-
-    // clang-format off
-    const double w_circle = texture_cirle.getWidth();
-    const double h_circle = texture_cirle.getHeight();
-    //                    x                  y                 r  g  b  tx   ty
-    vertexMap circle_vM{ { w_circle / 2 - 1, h_circle / 2 - 1, 1, 0, 0, 1/2, 1/2, 0 },
-                         { w_circle / 2 - 1, h_circle / 6,     0, 0, 1, 1/2, 1/6, 0 } };
-    // clang-format on
-    std::vector<uint16_t> indexes_circle_v{ { 0, 1 } };
-    circle.clear(black);
-    circle.set_gfx_program(gfx_00);
-    circle.draw_circle(circle_vM, indexes_circle_v, Flagcircle::ROUND);
-    // TEXTURE
-
+    // IMAGE
     canvas                image(width, height);
     triangle_interpolated board(image);
     // clang-format off
@@ -93,14 +59,55 @@ int main(int, char**)
                                   { width - 1, 0,          1, 1, 1, 1, 0, 0 } };
     // clang-format on
     std::vector<uint16_t> indexes_board_v{ { 0, 1, 2, 0, 3, 1 } };
+    // IMAGE END
 
-    // gfx::program      program01;
-    gfx::grayscale    gfx_01;
-    gfx::rotate_image gfx_02;
+    // TEXTURE circle
+    canvas                texture_cirle(width, height);
+    triangle_interpolated circle(texture_cirle);
 
-    std::array<gfx_program*, 2> programs{ &gfx_01, &gfx_02 };
-    size_t                      current_program_index = 1;
-    gfx_program* current_program = programs.at(current_program_index);
+    const double w_circle = texture_cirle.getWidth() - 1;
+    const double h_circle = texture_cirle.getHeight() - 1;
+    // clang-format off
+    //                     x             y             r  g  b  tx   ty
+    vertexMap circle_vM{ { w_circle / 2, h_circle / 2, 1, 0, 0, 1/2, 1/2, 0 },
+                         { w_circle / 2, h_circle / 6, 0, 0, 1, 1/2, 1/6, 0 } };
+    // clang-format on
+    std::vector<uint16_t> indexes_circle_v{ { 0, 1 } };
+    circle.clear(black);
+    circle.set_gfx_program(gfx_01);
+    circle.draw_circle(circle_vM, indexes_circle_v, Flagcircle::ROUND);
+
+    // clang-format off
+    //                  x                 y                  r    g    b    tx   ty
+    vertexMap numbers{ { w_circle / 2    ,     h_circle / 5, 0.1, 0.1, 0.1, 1/2, 1/5, 0 },
+                       { w_circle / 2 + 3,     h_circle / 4.5, 0.1, 0.1, 0.1, 1/2, 1/4, 0 },
+                       { w_circle / 2 - 3,     h_circle / 4.5, 0.1, 0.1, 0.1, 1/2, 1/4, 0 },
+                       { w_circle / 2    , 4 * h_circle / 5, 0.1, 0.1, 0.1, 1/2, 4/5, 0 },
+                       { w_circle / 2 - 3, 3.5 * h_circle / 4.5, 0.1, 0.1, 0.1, 1/2, 3/4, 0 },
+                       { w_circle / 2 + 3, 3.5 * h_circle / 4.5, 0.1, 0.1, 0.1, 1/2, 3/4, 0 }};
+
+    // clang-format on
+    std::vector<uint16_t> indexes_number_v{ { 0, 1, 2, 3, 4, 5 } };
+    circle.draw_triangles(numbers, indexes_number_v);
+    // TEXTURE circle END
+
+    // TEXTURE arrow
+    constexpr int16_t second_hand_width  = 20;
+    constexpr int16_t second_hand_height = height / 3;
+    constexpr int16_t minute_hand_width  = second_hand_width * 1.5;
+    constexpr int16_t minute_hand_height = second_hand_height * 0.8;
+    constexpr int16_t hour_hand_width    = minute_hand_width;
+    constexpr int16_t hour_hand_height   = minute_hand_height * 0.8;
+
+    // clang-format off
+    arrow second_hand(width, height, second_hand_width, second_hand_height, black);
+    arrow minute_hand(width, height, minute_hand_width, minute_hand_height, black);
+    arrow hour_hand(width, height, hour_hand_width, hour_hand_height, black);
+    // clang-format on
+    // TEXTURE arrow END
+
+    gfx::refresh_clock gfx_refresh;
+    board.set_gfx_program(gfx_refresh);
 
     void*     pixels = image.data();
     const int depth  = sizeof(color) * 8;
@@ -110,13 +117,16 @@ int main(int, char**)
     const int bmask  = 0x00ff0000;
     const int amask  = 0;
 
-    board.set_gfx_program(*current_program);
+    // board.set_gfx_program(*current_program);
 
     bool   continue_loop  = true;
     double scale          = 1;
-    auto   previous_timer  = std::chrono::high_resolution_clock::now();
-    double second_current = 0;
+    auto   previous_timer = std::chrono::high_resolution_clock::now();
     double second_last    = 0;
+    double second_current = 0;
+    double minute_current = 0;
+    double hour_current   = 0;
+
     time_t rawtime;
     tm*    timeinfo;
 
@@ -132,10 +142,6 @@ int main(int, char**)
             }
             else if (e.type == SDL_KEYUP)
             {
-                current_program_index =
-                    (current_program_index + 1) % programs.size();
-                current_program = programs.at(current_program_index);
-                board.set_gfx_program(*current_program);
             }
             else if (e.type == SDL_MOUSEMOTION)
             {
@@ -161,9 +167,10 @@ int main(int, char**)
                 }
             }
         }
-        auto now_timer   = std::chrono::high_resolution_clock::now();
-        auto delta_timer = std::chrono::duration_cast<std::chrono::milliseconds>(
-            now_timer - previous_timer);
+        auto now_timer = std::chrono::high_resolution_clock::now();
+        auto delta_timer =
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                now_timer - previous_timer);
 
         if (delta_timer.count() > refresh_rate)
         {
@@ -173,25 +180,29 @@ int main(int, char**)
             timeinfo = localtime(&rawtime);
 
             second_current = timeinfo->tm_sec;
+            minute_current = timeinfo->tm_min;
+            hour_current   = timeinfo->tm_hour % 12;
+
             if (second_current != second_last)
             {
-                std::cout << "seconds: " << second_current << std::endl;
+                std::cout << "hour: " << hour_current;
+                std::cout << "\tminute: " << minute_current;
+                std::cout << "\tseconds: " << second_current << std::endl;
             }
             second_last = second_current;
 
             const double w_in_ren = image.getWidth();
             const double h_in_ren = image.getHeight();
-            current_program->set_uniforms(uniforms{ 0,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    scale,
-                                                    w_in_ren,
-                                                    h_in_ren,
-                                                    second_current,
-                                                    &texture_arrow,
-                                                    &texture_cirle });
 
+            second_hand.draw_arrow(gfx::my_uniforms{
+                60, second_current, scale, w_in_ren, h_in_ren, 0, 0, 0 });
+            minute_hand.draw_arrow(gfx::my_uniforms{
+                60, minute_current, scale, w_in_ren, h_in_ren, 0, 0, 0 });
+            hour_hand.draw_arrow(gfx::my_uniforms{
+                12, hour_current, scale, w_in_ren, h_in_ren, 0, 0, 0 });
+
+            gfx_refresh.set_texture(
+                &texture_cirle, &second_hand, &minute_hand, &hour_hand);
             board.draw_triangles(board_vM, indexes_board_v);
 
             SDL_Surface* bitmapSurface = SDL_CreateRGBSurfaceFrom(pixels,

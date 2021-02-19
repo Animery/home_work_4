@@ -89,7 +89,7 @@ add_executable(clock_render     src/clock_render.cpp
                                 src/triangle_indexed_render.cpp
                                 )
                 
-target_link_libraries(clock_render PRIVATE SDL2::SDL2 SDL2::SDL2main)
+target_link_libraries(clock_render PRIVATE SDL2::SDL2-static SDL2::SDL2main)
 target_compile_features(clock_render PUBLIC cxx_std_17)
 
 

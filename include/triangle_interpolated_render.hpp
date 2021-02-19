@@ -54,7 +54,7 @@ struct uniforms
     double  f0       = 0;
     double  f1       = 0;
     double  f2       = 0;
-    double  f3       = 0;
+    double  f3       = 0;       // number of divisions
     double  f4       = 0;       // scale
     double  f5       = 0;       // width  Image
     double  f6       = 0;       // height Image

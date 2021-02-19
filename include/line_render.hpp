@@ -2,7 +2,7 @@
 
 #include "canvas.hpp"
 
-struct line_render : protected irender
+struct line_render : public irender
 {
     line_render(canvas& buffer_);
     void draw_line(const position start, const position end, color);

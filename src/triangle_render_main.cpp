@@ -14,6 +14,8 @@ int main(int, char**)
     canvas image(width, height);
 
     triangle_render render_tri(image);
+    render_tri;
+
     render_tri.clear(black);
 
     render_tri.draw_triangle(position{ 0, 0 },

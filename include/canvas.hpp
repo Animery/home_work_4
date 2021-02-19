@@ -1,6 +1,5 @@
 #pragma once
 
-// #include <array>
 #include <cassert>
 #include <cmath>
 #include <cstddef>
@@ -20,16 +19,15 @@ struct color
     uint8_t     g = 0;
     uint8_t     b = 0;
     friend bool operator==(const color& l, const color& r);
+    friend bool operator!=(const color& l, const color& r);
 };
 #pragma pack(pop)
-
-// const size_t buffer_size = width * height;
 
 class canvas : public std::vector<color>
 {
 public:
     // canvas(){};
-    explicit canvas(uint16_t width_, uint16_t height_)
+    explicit canvas(size_t width_, size_t height_)
         : width{ width_ }
         , height{ height_ }
     {
@@ -89,9 +87,12 @@ public:
         return color{ 0, 0, 0 };
     }
 
+protected:
+    size_t width  = 0;
+    size_t height = 0;
+
 private:
-    uint16_t width  = 0;
-    uint16_t height = 0;
+
 };
 
 /*int32_t         x = 0;
